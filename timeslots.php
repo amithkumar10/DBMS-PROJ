@@ -10,6 +10,7 @@ if (!isset($_GET['movieName']) || !isset($_GET['date'])) {
 $movie_name = $_GET['movieName'];
 $date = $_GET['date'];
 
+// Query to get showtimes along with available seats
 $sql = "SELECT * FROM showtimes WHERE movie_name = ? AND date = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ss", $movie_name, $date);
@@ -45,7 +46,14 @@ $result = $stmt->get_result();
         <?php while ($row = $result->fetch_assoc()): ?>
             <div class="card">
                 <h2><?php echo htmlspecialchars($row['time_slot']); ?></h2>
-                <a href="book.php?showtime_id=<?php echo $row['id']; ?>">Book Now</a>
+                <p>Available Seats: <?php echo htmlspecialchars($row['available_seats']); ?></p>
+
+                <!-- Check if seats are available -->
+                <?php if ($row['available_seats'] > 0): ?>
+                    <a href="book.php?showtime_id=<?php echo $row['id']; ?>">Book Now</a>
+                <?php else: ?>
+                    <p style="color: red;">House Full</p>
+                <?php endif; ?>
             </div>
         <?php endwhile; ?>
     </div>
