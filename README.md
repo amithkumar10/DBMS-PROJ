@@ -1,0 +1,2 @@
+This is a DBMS group project that I have built in college along with <a href="https://www.linkedin.com/in/anish-parab-a13742258/">Anish Parab</a>  and  <a href="https://www.linkedin.com/in/jasaram-suthar-342375258/">Jasaram Suthar</a> 
+In this project we have built a movie ticket booking web-app, where the user can search for a movie and can see the available time slots for it. He can choose the timeslot according to his convenience. Finally he just has to fill in some basic details & will finish booking his ticket, which he can download on his PC
