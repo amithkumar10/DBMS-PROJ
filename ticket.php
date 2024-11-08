@@ -1,29 +1,47 @@
-<?php 
-include 'db_config.php'; // Include your database connection file
+<?php
+// Connect to the database
+$conn = new mysqli("localhost", "root", "", "movietickets");
 
-// Check if ticket_number is provided in the URL
-if (isset($_GET['ticket_number'])) {
-    $ticket_number = $_GET['ticket_number'];
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-    // Query to fetch booking details based on the ticket number
-    $sql = "SELECT b.id, b.movie_name, b.seats, b.customer_name, b.phone_number, s.date, s.time_slot 
-            FROM bookings b 
-            JOIN showtimes s ON b.showtime_id = s.id 
-            WHERE b.ticket_number = ?";
+// Retrieve booking ID from URL
+$booking_id = isset($_GET['booking_id']) ? $_GET['booking_id'] : null;
+
+if ($booking_id) {
+    // Fetch booking details using the booking ID
+    $sql = "
+        SELECT 
+            b.no_of_seats,
+            c.custname AS customer_name,
+            s.timing,
+            s.date,
+            md.mname AS movie_name,
+            md.mgenre AS movie_genre
+        FROM 
+            bookings b
+        JOIN 
+            customer c ON b.customer_id = c.customer_id
+        JOIN 
+            Showtimes s ON b.showtime_id = s.showtime_id
+        JOIN 
+            MovieDetails md ON s.mid = md.mid
+        WHERE 
+            b.booking_id = ?
+    ";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $ticket_number);
+    $stmt->bind_param("i", $booking_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    $booking = $result->fetch_assoc();
+    $ticket_details = $result->fetch_assoc();
 
-    // Check if booking was found
-    if (!$booking) {
-        echo "No booking found with the provided ticket number.";
-        exit();
+    if (!$ticket_details) {
+        die("Ticket not found.");
     }
 } else {
-    echo "Ticket number not provided.";
-    exit();
+    die("Booking ID missing.");
 }
 ?>
 
@@ -32,63 +50,36 @@ if (isset($_GET['ticket_number'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Confirmation</title>
-    <style>
-        .ticket {
-            border: 3px solid black;
-            padding: 5%;
-        }
-    </style>
-    <script>
-        function deleteTicket() {
-            if (confirm("Are you sure you want to delete this ticket?")) {
-                window.location.href = "delete_ticket.php?ticket_number=<?php echo htmlspecialchars($ticket_number); ?>";
-            }
-        }
-
-        function redirectToIndex() {
-            window.location.href = "index.php";
-        }
-
-        // Function to download ticket as a .txt file
-        function downloadTicket() {
-            // Extract text from the ticket div
-            const ticketContent = document.querySelector('.ticket').innerText;
-
-            // Format the ticket content in a box-like format
-            const formattedTicket = `
-*****************************
-           TICKET
-*****************************
-${ticketContent}
-*****************************
-`;
-
-            // Create a blob object with the ticket content
-            const blob = new Blob([formattedTicket], { type: 'text/plain' });
-            const link = document.createElement('a');
-
-            // Create a download link
-            link.href = URL.createObjectURL(blob);
-            link.download = 'ticket_<?php echo htmlspecialchars($ticket_number); ?>.txt'; // Filename with ticket number
-            link.click(); // Trigger the download
-        }
-    </script>
+    <title>Ticket Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Ticket Confirmation</h1>
-    <div class="ticket">
-        <p><strong>Ticket Number:</strong> <?php echo htmlspecialchars($ticket_number); ?></p>
-        <p><strong>Movie Name:</strong> <?php echo htmlspecialchars($booking['movie_name']); ?></p>
-        <p><strong>Date:</strong> <?php echo htmlspecialchars($booking['date']); ?></p>
-        <p><strong>Time:</strong> <?php echo htmlspecialchars($booking['time_slot']); ?></p>
-        <p><strong>Customer Name:</strong> <?php echo htmlspecialchars($booking['customer_name']); ?></p>
-        <p><strong>Phone Number:</strong> <?php echo htmlspecialchars($booking['phone_number']); ?></p>
-        <p><strong>Seats Booked:</strong> <?php echo htmlspecialchars($booking['seats']); ?></p>
-    </div>
+<body class="bg-gray-100">
 
-    <button onclick="redirectToIndex()">Go Back</button>
-    <button onclick="deleteTicket()">Delete Ticket</button>
-    <button onclick="downloadTicket()">Download Ticket</button> <!-- Download Ticket Button -->
+<div class="container mx-auto my-12 p-8 bg-white shadow-lg rounded-lg max-w-md">
+    <h2 class="text-2xl font-semibold text-center mb-6">Your Ticket</h2>
+
+    <div class="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50">
+        <h3 class="text-xl font-bold mb-2"><?php echo htmlspecialchars($ticket_details['movie_name']); ?></h3>
+        <p class="text-sm text-gray-600 mb-4"><strong>Genre:</strong> <?php echo htmlspecialchars($ticket_details['movie_genre']); ?></p>
+
+        <div class="mb-4">
+            <p><strong>Customer Name:</strong> <?php echo htmlspecialchars($ticket_details['customer_name']); ?></p>
+            <p><strong>Date:</strong> <?php echo htmlspecialchars($ticket_details['date']); ?></p>
+            <p><strong>Timing:</strong> <?php echo htmlspecialchars($ticket_details['timing']); ?></p>
+            <p><strong>Seats:</strong> <?php echo htmlspecialchars($ticket_details['no_of_seats']); ?></p>
+        </div>
+
+        <p class="text-center text-lg font-bold text-blue-600 mt-6">Enjoy your movie!</p>
+      
+    </div>
+    <div class="flex justify-center mt-6">
+        <a href="http://localhost/movie_booking/index.php" class="inline-block">
+            <button class="px-6 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition duration-200">
+                Logout
+            </button>
+        </a>
+    </div>
+</div>
+
 </body>
 </html>
