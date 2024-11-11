@@ -10,19 +10,21 @@
             document.getElementById("adminEmailField").classList.remove("hidden");
             document.getElementById("userLoginForm").classList.add("hidden");
         }
+
         function showUserLogin() {
-            document.getElementById("userLoginForm").classList.remove("hidden");
-            document.getElementById("adminEmailField").classList.add("hidden");
+            // No action needed for "Login as User" as it redirects directly
+            window.location.href = "home.php"; // Redirect to home.php
         }
     </script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-cover bg-center bg-no-repeat flex items-center justify-center" style="background-image: url('BG.jpg'); min-height: 100vh;">
 
-    <div class="bg-white shadow-md rounded-lg p-8 max-w-md w-full text-center">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800">Movie Ticket Booking</h1>
-        <p class="mb-4 text-gray-600">Please select how you want to log in:</p>
+    <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black shadow-lg rounded-lg p-8 max-w-md w-full text-center relative z-10">
+        <h1 class="text-3xl font-semibold text-white mb-6">CineBook</h1>
+        <p class="mb-4 text-gray-300">Please select how you want to log in:</p>
 
         <div class="space-y-4">
+            <!-- User Login Button (Just redirects to home.php now) -->
             <button onclick="showUserLogin()" class="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-200">
                 Login as User
             </button>
@@ -31,17 +33,6 @@
                 Login as Admin
             </button>
         </div>
-
-        <!-- User Login Form -->
-        <form method="POST" id="userLoginForm" class="hidden mt-4">
-            <input type="text" name="custname" placeholder="Enter Your Name" required 
-                   class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
-            <input type="text" name="phno" placeholder="Enter Your Phone Number" required 
-                   class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
-            <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 w-full">
-                Submit
-            </button>
-        </form>
 
         <!-- Admin Login Form -->
         <form action="admin.php" method="GET" id="adminEmailField" class="hidden mt-4">
@@ -52,36 +43,6 @@
             </button>
         </form>
     </div>
-
-    <?php
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // Database connection
-        $conn = new mysqli("localhost", "root", "", "movietickets");
-
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Retrieve input values
-        $custname = $_POST['custname'];
-        $phno = $_POST['phno'];
-
-        // Insert data into Customer table
-        $stmt = $conn->prepare("INSERT INTO Customer (custname, phno) VALUES (?, ?)");
-        $stmt->bind_param("ss", $custname, $phno);
-
-        if ($stmt->execute()) {
-            // Redirect to home.php if insertion is successful
-            header("Location: home.php");
-            exit();
-        } else {
-            echo "<p class='text-red-500 text-center mt-4'>Error: " . $stmt->error . "</p>";
-        }
-
-        $stmt->close();
-        $conn->close();
-    }
-    ?>
 
 </body>
 </html>

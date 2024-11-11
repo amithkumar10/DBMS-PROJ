@@ -22,35 +22,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Movies - Movie Ticket Booking</title>
+    <title>Search Movies - CineBook</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100">
+<body  class="bg-gradient-to-r from-gray-400  to-gray-600 bg-cover bg-center bg-no-repeat relative" style="min-height: 100vh;"
 
     <!-- Navbar -->
-    <nav class="bg-blue-600 p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="#" class="text-white text-lg font-bold">Movie Ticket Booking</a>
-            <ul class="flex space-x-4">
-                <li><a href="#" class="text-white hover:underline">Home</a></li>
-                <li><a href="#" class="text-white hover:underline">Movies</a></li>
-                <li><a href="#" class="text-white hover:underline">Bookings</a></li>
-                <li><a href="#" class="text-white hover:underline">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+    <nav class="bg-gradient-to-br from-gray-800 via-gray-900 to-black p-8">
+    <div class="container mx-auto flex justify-between items-center">
+        <!-- Logo Image -->
+        <a href="#" class="flex items-center">
+            <img src="CiNEBOOK.jpeg" alt="CineBook Logo" class="h-8 mr-2">
+            <!-- Logo Text -->
+            <span class="text-white text-xl font-bold">CineBook</span>
+        </a>
+    </div>
+</nav>
+
 
     <!-- Search Card -->
-    <div class="flex-grow flex items-center justify-center py-12">
-        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-            <h1 class="text-3xl font-semibold text-center mb-6 text-gray-800">Search for Movies</h1>
+    <div class="absolute inset-0 flex items-center justify-center py-12">
+        <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black shadow-lg rounded-lg p-8 max-w-md w-full text-center relative z-10">
+            <h1 class="text-3xl font-semibold text-white mb-6">Search for Movies</h1>
             <form method="POST" action="home.php" class="space-y-4">
                 <div>
-                    <label for="movieName" class="block text-gray-700 font-medium">Movie Name:</label>
+                    <label for="movieName" class="block text-gray-300 font-medium">Movie Name:</label>
                     <input type="text" name="movieName" id="movieName" required class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label for="date" class="block text-gray-700 font-medium">Date:</label>
+                    <label for="date" class="block text-gray-300 font-medium">Date:</label>
                     <input type="date" name="date" id="date" required class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div class="text-center">
@@ -59,11 +59,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-blue-600 text-white p-4 text-center">
-        <p>&copy; 2024 Movie Ticket Booking. All rights reserved.</p>
-    </footer>
 
 </body>
 </html>

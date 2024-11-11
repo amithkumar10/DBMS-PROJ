@@ -53,13 +53,14 @@ if ($booking_id) {
     <title>Ticket Details</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100">
+<body class="bg-cover bg-center bg-no-repeat flex items-center justify-center" style="background-image: url('BG.jpg'); min-height: 100vh;">
 
 <div class="container mx-auto my-12 p-8 bg-white shadow-lg rounded-lg max-w-md">
     <h2 class="text-2xl font-semibold text-center mb-6">Your Ticket</h2>
 
     <div class="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50">
         <h3 class="text-xl font-bold mb-2"><?php echo htmlspecialchars($ticket_details['movie_name']); ?></h3>
+        
         <p class="text-sm text-gray-600 mb-4"><strong>Genre:</strong> <?php echo htmlspecialchars($ticket_details['movie_genre']); ?></p>
 
         <div class="mb-4">
